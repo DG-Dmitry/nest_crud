@@ -48,7 +48,6 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   @Post('/phone-registration')
   registrationByPhone(@Body() phoneRegistrationDto: PhoneRegistrationDto) {
-    console.log(phoneRegistrationDto)
     return this.authService.registrationByPhone(phoneRegistrationDto)
   }
 }

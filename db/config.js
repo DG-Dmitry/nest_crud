@@ -10,8 +10,6 @@ const defaultConfig = {
   dialect: 'postgres',
 }
 
-console.log(defaultConfig, `.${process.env.NODE_ENV}.env`)
-
 module.exports = {
   development: {
     ...defaultConfig,
