@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { User } from './user.model'
-import { Op, Transaction } from 'sequelize'
+import { Op } from 'sequelize'
 import { REQUEST } from '@nestjs/core'
 import { Request } from 'express'
 import OkType from '../../types/Ok'
@@ -19,15 +19,12 @@ export class UserService {
     @Inject(REQUEST) private readonly req: Request,
   ) {}
 
-  async create(
-    createUserData: {
-      name: string
-      password: string
-      email?: string
-      phoneNumber?: string
-    },
-    transaction?: Transaction,
-  ): Promise<User> {
+  async create(createUserData: {
+    name: string
+    password: string
+    email?: string
+    phoneNumber?: string
+  }): Promise<User> {
     const { email, phoneNumber } = createUserData
 
     if (!email && !phoneNumber)
@@ -43,7 +40,6 @@ export class UserService {
       where: {
         [Op.or]: [emailCondition, phoneCondition],
       },
-      transaction,
     })
 
     if (isAlreadyExist)
@@ -52,15 +48,12 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
       )
 
-    return this.model.create(createUserData, { transaction })
+    return this.model.create(createUserData)
   }
 
   async delete(id: string): Promise<OkType> {
-    const transaction = this.req.transaction
-
     const success = await this.model.destroy({
       where: { id },
-      transaction,
     })
 
     if (success) return OkType.success
